@@ -25,7 +25,7 @@ pipeline {
                         --name juice \
                         -d \
                         -p 3000:3000 \
-                        bkimminich/juice-shop'
+                        bkimminich/juice-shop
                         
                     sleep 5
                 '''
