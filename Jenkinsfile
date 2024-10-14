@@ -15,9 +15,11 @@ pipeline {
             }
         }
         stage('Setup') {
-            echo 'Setting up the environment...'
+            steps {
+                echo 'Setting up the environment...'
             
-            sh 'mkdir -p results'
+                sh 'mkdir -p results'
+            }
         }
         stage('ZAP') {
             steps {
