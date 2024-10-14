@@ -4,7 +4,7 @@ pipeline {
         skipDefaultCheckout(true)
     }
     stages {
-        stage('GitHub') {
+        stage('Fetch the code') {
             steps {
                 echo 'Cloning the repository...'
                 
@@ -14,15 +14,12 @@ pipeline {
                 }
             }
         }
-        stage('Setup') {
+        stage('Setup environment') {
             steps {
                 echo 'Setting up the environment...'
             
                 sh 'mkdir -p results'
-            }
-        }
-        stage('ZAP') {
-            steps {
+
                 echo 'Starting the container...'
                 
                 sh '''
@@ -31,10 +28,11 @@ pipeline {
                         -d \
                         -p 3000:3000 \
                         bkimminich/juice-shop
-                        
-                    sleep 5
                 '''
-                
+            }
+        }
+        stage('Run DAST scan - ZAP') {
+            steps {    
                 echo 'Starting the zap container...'
                 
                 sh '''
@@ -45,33 +43,27 @@ pipeline {
                         -t ghcr.io/zaproxy/zaproxy:stable bash \
                         -c "zap.sh -cmd -addonupdate; zap.sh -cmd -addoninstall communityScripts -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -autorun /zap/wrk/passive.yaml" \
                         || true
-                    
                 '''
             }
             post {
                 always {
-                    echo 'Copying the results...'
+                    echo 'Copying the results and removing the container...'
                     
                     sh '''
                         docker cp zap:/zap/wrk/reports/zap_html_report.html ${WORKSPACE}/results/zap_html_report.html
                         docker cp zap:/zap/wrk/reports/zap_xml_report.xml ${WORKSPACE}/results/zap_xml_report.xml
+                        docker stop zap
+                        docker rm zap
                     '''
                 }
             }
         }
         stage('Cleanup') {
             steps {
-                echo 'Stopping the containers'
+                echo 'Stopping and removing the containers'
                 
                 sh '''
-                    docker stop zap
                     docker stop juice
-                '''
-
-                echo 'Removing unused containers'
-                
-                sh '''
-                    docker rm zap
                     docker rm juice
                 '''
             }
@@ -80,6 +72,7 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: 'results/**/*', fingerprint: true, allowEmptyArchive: true
+            defectDojoPublisher(artifact: 'results/zap_xml_report.xml', productName: 'Juice Shop', scanType: 'ZAP Scan', engagementName: 'kajetan.kucharski@secawa.com')
         }
     }
 }
