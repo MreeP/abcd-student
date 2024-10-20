@@ -20,15 +20,26 @@ pipeline {
             
                 sh 'mkdir -p results'
 
-                echo 'Starting the container...'
-                
-                sh '''
-                    docker run \
-                        --name juice \
-                        -d \
-                        -p 3000:3000 \
-                        bkimminich/juice-shop
-                '''
+                // echo 'Starting the container...'
+                // 
+                // sh '''
+                //     docker run \
+                //         --name juice \
+                //         -d \
+                //         -p 3000:3000 \
+                //         bkimminich/juice-shop
+                // '''
+            }
+        }
+        stage('Run SCA scan - osv scanner') {
+            steps {    
+                echo 'Starting the osv scan...'
+                sh 'osv-scanner scan --lockfile package-lock.json --format json --output results/osv-scanner-output.json'
+            }
+            post {
+                always {
+                    //
+                }
             }
         }
         // stage('Run DAST scan - ZAP') {
