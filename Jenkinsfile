@@ -68,10 +68,10 @@ pipeline {
             steps {
                 echo 'Stopping and removing the containers'
                 
-                sh '''
-                    docker stop juice
-                    docker rm juice
-                '''
+                // sh '''
+                //     docker stop juice
+                //     docker rm juice
+                // '''
             }
         }
     }
