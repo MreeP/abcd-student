@@ -36,11 +36,6 @@ pipeline {
                 echo 'Starting the osv scan...'
                 sh 'osv-scanner scan --lockfile package-lock.json --format json --output results/osv-scanner-output.json'
             }
-            post {
-                always {
-                    //
-                }
-            }
         }
         // stage('Run DAST scan - ZAP') {
         //     steps {    
