@@ -34,7 +34,7 @@ pipeline {
         stage('Run SCA scan - osv scanner') {
             steps {    
                 echo 'Starting the osv scan...'
-                sh 'osv-scanner scan --lockfile package-lock.json --format markdown --output results/osv-scanner-output.json || true'
+                sh 'osv-scanner scan --lockfile package-lock.json --format json --output results/osv-scanner-output.json || true'
             }
         }
         // stage('Run DAST scan - ZAP') {
@@ -79,6 +79,7 @@ pipeline {
         always {
             archiveArtifacts artifacts: 'results/**/*', fingerprint: true, allowEmptyArchive: true
             // defectDojoPublisher(artifact: 'results/zap_xml_report.xml', productName: 'Juice Shop', scanType: 'ZAP Scan', engagementName: 'kajetan.kucharski@secawa.com')
+            defectDojoPublisher(artifact: 'results/osv-scanner-output.json', productName: 'Juice Shop', scanType: 'OSV Scan', engagementName: 'kajetan.kucharski@secawa.com')
         }
     }
 }
