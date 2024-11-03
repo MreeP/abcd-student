@@ -31,12 +31,20 @@ pipeline {
                 // '''
             }
         }
-        stage('Run SCA scan - osv scanner') {
+        // stage('Run SCA scan - osv scanner') {
+        //     steps {    
+        //         echo 'Starting the osv scan...'
+        //         sh 'osv-scanner scan --lockfile package-lock.json --format json --output results/osv-scanner-output.json || true'
+        //     }
+        // }
+
+        stage('Run SAST - trufflehog scan') {
             steps {    
-                echo 'Starting the osv scan...'
-                sh 'osv-scanner scan --lockfile package-lock.json --format json --output results/osv-scanner-output.json || true'
+                echo 'Starting the trufflehog scan...'
+                sh 'trufflehog git file://. --json'
             }
         }
+        
         // stage('Run DAST scan - ZAP') {
         //     steps {    
         //         echo 'Starting the zap container...'
