@@ -41,7 +41,7 @@ pipeline {
         stage('Run SAST - trufflehog scan') {
             steps {    
                 echo 'Starting the trufflehog scan...'
-                sh 'trufflehog git file://. --json > results/trufflehog.json
+                sh 'trufflehog git file://. --json > results/trufflehog.json'
             }
         }
         
