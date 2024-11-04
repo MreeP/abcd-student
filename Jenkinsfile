@@ -96,6 +96,7 @@ pipeline {
             // defectDojoPublisher(artifact: 'results/zap_xml_report.xml', productName: 'Juice Shop', scanType: 'ZAP Scan', engagementName: 'kajetan.kucharski@secawa.com')
             // defectDojoPublisher(artifact: 'results/osv-scanner-output.json', productName: 'Juice Shop', scanType: 'OSV Scan', engagementName: 'kajetan.kucharski@secawa.com')
             // defectDojoPublisher(artifact: 'results/trufflehog.json', productName: 'Juice Shop', scanType: 'Trufflehog Scan', engagementName: 'kajetan.kucharski@secawa.com')
+            defectDojoPublisher(artifact: 'results/semgrep.json', productName: 'Juice Shop', scanType: 'Semgrep JSON Report', engagementName: 'kajetan.kucharski@secawa.com')
         }
     }
 }
