@@ -38,10 +38,17 @@ pipeline {
         //     }
         // }
 
-        stage('Run SAST - trufflehog scan') {
+        // stage('Run SAST - trufflehog scan') {
+        //     steps {    
+        //         echo 'Starting the trufflehog scan...'
+        //         sh 'trufflehog git file://. --json > results/trufflehog.json'
+        //     }
+        // }
+
+        stage('Run SAST - semgrep scan') {
             steps {    
-                echo 'Starting the trufflehog scan...'
-                sh 'trufflehog git file://. --json > results/trufflehog.json'
+                echo 'Starting the semgrep scan...'
+                sh 'semgrep scan --config auto --json-output=results/semgrep.json .'
             }
         }
         
@@ -88,7 +95,7 @@ pipeline {
             archiveArtifacts artifacts: 'results/**/*', fingerprint: true, allowEmptyArchive: true
             // defectDojoPublisher(artifact: 'results/zap_xml_report.xml', productName: 'Juice Shop', scanType: 'ZAP Scan', engagementName: 'kajetan.kucharski@secawa.com')
             // defectDojoPublisher(artifact: 'results/osv-scanner-output.json', productName: 'Juice Shop', scanType: 'OSV Scan', engagementName: 'kajetan.kucharski@secawa.com')
-            defectDojoPublisher(artifact: 'results/trufflehog.json', productName: 'Juice Shop', scanType: 'Trufflehog Scan', engagementName: 'kajetan.kucharski@secawa.com')
+            // defectDojoPublisher(artifact: 'results/trufflehog.json', productName: 'Juice Shop', scanType: 'Trufflehog Scan', engagementName: 'kajetan.kucharski@secawa.com')
         }
     }
 }
